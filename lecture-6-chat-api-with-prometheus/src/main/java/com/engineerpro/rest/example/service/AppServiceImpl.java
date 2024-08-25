@@ -20,6 +20,14 @@ public class AppServiceImpl implements AppService {
   @LogExecutionTime
   @Cacheable("getAppByClientKey")
   public App getAppByClientKey(String apiClientKey) {
+    // 2 cases
+    // read from redis => cache hit
+    // else, read from db => cache miss
+    // create counter redis.getAppByClientId.cache.hit
+    // create counter redis.getAppByClientId.cache.miss
+
+    // case: use payment API
+    // counter metric: request.payment.error
     return appRepository.findByApiClientKey(apiClientKey);
   }
 }
