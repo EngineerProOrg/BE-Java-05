@@ -1,0 +1,24 @@
+image: gradle:jdk17
+
+stages:
+  - test
+  - deploy
+  - integration_test
+
+build:
+  stage: test
+  script:
+    - ./gradlew test
+
+integration_test:
+  stage: integration_test
+  script:
+    - ./gradlew integrationTests
+
+
+heroku_deploy:
+  stage: deploy
+  image: ruby:latest
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
