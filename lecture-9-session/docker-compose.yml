@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: app
+    ports:
+      - "127.0.0.1:3316:3306"
+
+  redis:
+    image: redis
+    ports:
+      - "6389:6379"
+
+  spring-app-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    restart: always
+    ports:
+      - "127.0.0.1:8090:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker-compose
+  
+  spring-app-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker-compose
+  
+  nginx:
+    image: nginx:1.13
+    restart: always
+    ports:
+    - 8080:8080
+    volumes:
+    - ./nginx/conf:/etc/nginx/conf.d
+    depends_on:
+    - spring-app-1
+    - spring-app-2
