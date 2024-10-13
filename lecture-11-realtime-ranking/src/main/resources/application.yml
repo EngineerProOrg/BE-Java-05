@@ -1,0 +1,74 @@
+logging:
+    file:
+        name: ./log/application.log
+    level:
+        org:
+            springframework:
+                jdbc:
+                    core: TRACE
+                web:
+                    filter:
+                        CommonsRequestLoggingFilter: DEBUG
+spring:
+    data:
+        redis:
+            database: 1
+            host: localhost
+            port: 6379
+    datasource:
+        password: root@123
+        tomcat:
+            max-active: 50
+            max-wait: 10000
+            test-on-borrow: true
+        url: jdbc:mysql://localhost/spring_session
+        username: root
+    jpa:
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+    rabbitmq:
+        host: localhost
+        port: 5672
+        stomp:
+            relay:
+                host: localhost
+                port: 61613
+                login: guest
+                passcode: guest
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        client-id: REPLACE_YOUR_CLIENT_ID
+                        client-secret: REPLACE_YOUR_CLIENT_SECRET
+                        scope:
+                            - email
+                            - profile
+springdoc:
+    api-docs:
+        path: /api-docs
+---
+spring.config.activate.on-profile: local
+---
+spring.config.activate.on-profile: docker-compose
+spring:
+    datasource:
+        url: 'jdbc:mysql://mysql/app'
+        username: app
+        password: app
+    data:
+        redis:
+            host: redis
+            port: 6379
+    rabbitmq:
+        host: rabbitmq
+        port: 5672
+        stomp:
+            relay:
+                host: rabbitmq
+                port: 61613
+                login: guest
+                passcode: guest
